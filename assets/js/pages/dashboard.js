@@ -51,15 +51,36 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (closeBtn) closeBtn.classList.add('btn-close-white');
 
                     const tbody = document.getElementById('donutDetailBody');
-                    tbody.innerHTML = details.length
-                        ? details.map(d =>
-                            `<tr>
-                                <td>${d.data}</td>
-                                <td class="fw-medium">${d.prontuario}</td>
-                                <td>${d.nome}</td>
-                            </tr>`
-                          ).join('')
-                        : '<tr><td colspan="3" class="text-center text-muted py-3">Sem registros</td></tr>';
+                    tbody.textContent = '';
+
+                    if (details.length) {
+                        details.forEach(d => {
+                            const tr = document.createElement('tr');
+
+                            const tdData = document.createElement('td');
+                            tdData.textContent = String(d.data ?? '');
+
+                            const tdProntuario = document.createElement('td');
+                            tdProntuario.className = 'fw-medium';
+                            tdProntuario.textContent = String(d.prontuario ?? '');
+
+                            const tdNome = document.createElement('td');
+                            tdNome.textContent = String(d.nome ?? '');
+
+                            tr.appendChild(tdData);
+                            tr.appendChild(tdProntuario);
+                            tr.appendChild(tdNome);
+                            tbody.appendChild(tr);
+                        });
+                    } else {
+                        const tr = document.createElement('tr');
+                        const td = document.createElement('td');
+                        td.colSpan = 3;
+                        td.className = 'text-center text-muted py-3';
+                        td.textContent = 'Sem registros';
+                        tr.appendChild(td);
+                        tbody.appendChild(tr);
+                    }
 
                     new bootstrap.Modal(document.getElementById('donutDetailModal')).show();
                 },

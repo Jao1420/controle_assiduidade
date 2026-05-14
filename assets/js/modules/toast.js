@@ -25,15 +25,30 @@ window.showToast = function (message, type = 'danger') {
     el.className = `toast align-items-center ${bgClass} border-0`;
     el.setAttribute('role', 'alert');
     el.setAttribute('aria-live', 'assertive');
-    el.innerHTML = `
-        <div class="d-flex">
-            <div class="toast-body d-flex align-items-center gap-2">
-                <i class="bi bi-${icon}"></i>
-                <span>${message}</span>
-            </div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto"
-                    data-bs-dismiss="toast" aria-label="Fechar"></button>
-        </div>`;
+
+    const wrap = document.createElement('div');
+    wrap.className = 'd-flex';
+
+    const body = document.createElement('div');
+    body.className = 'toast-body d-flex align-items-center gap-2';
+
+    const iconEl = document.createElement('i');
+    iconEl.className = `bi bi-${icon}`;
+
+    const text = document.createElement('span');
+    text.textContent = String(message ?? '');
+
+    const close = document.createElement('button');
+    close.type = 'button';
+    close.className = 'btn-close btn-close-white me-2 m-auto';
+    close.setAttribute('data-bs-dismiss', 'toast');
+    close.setAttribute('aria-label', 'Fechar');
+
+    body.appendChild(iconEl);
+    body.appendChild(text);
+    wrap.appendChild(body);
+    wrap.appendChild(close);
+    el.appendChild(wrap);
 
     container.appendChild(el);
 

@@ -347,7 +347,7 @@ $mesNome   = ['','Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','No
     'justDetails' => $justDetails,
     'dias'        => $chartDias,
     'presenca'    => $chartPct,
-], JSON_UNESCAPED_UNICODE) ?></script>
+], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?></script>
 
 <!-- Modal: detalhe do slice do gráfico de pizza -->
 <div class="modal fade" id="donutDetailModal" tabindex="-1" aria-hidden="true">

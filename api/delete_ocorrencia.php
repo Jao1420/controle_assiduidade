@@ -1,6 +1,9 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/security.php';
+
+security_bootstrap(true);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
@@ -8,8 +11,16 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+enforce_csrf_or_exit_json();
+
 $raw  = file_get_contents('php://input');
 $data = json_decode($raw, true);
+
+if (!is_array($data)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Corpo JSON inválido']);
+    exit;
+}
 
 $usuarioId = (int)($data['usuario_id'] ?? 0);
 $date      = trim($data['data']        ?? '');

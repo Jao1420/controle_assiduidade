@@ -1,7 +1,10 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/security.php';
 require_once __DIR__ . '/../config/justificativas.php';
+
+security_bootstrap(true);
 
 $method = $_SERVER['REQUEST_METHOD'];
 $pdo    = getConnection();
@@ -28,8 +31,17 @@ if ($method !== 'POST') {
     exit;
 }
 
+enforce_csrf_or_exit_json();
+
 $raw    = file_get_contents('php://input');
 $data   = json_decode($raw, true);
+
+if (!is_array($data)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Corpo JSON inválido']);
+    exit;
+}
+
 $action = $data['action'] ?? '';
 
 $turnos = ['Comercial','Segundo Turno','Terceiro Turno'];
@@ -39,6 +51,12 @@ if ($action === 'create') {
     $nome       = trim($data['nome']       ?? '');
     $turno      = $data['turno']           ?? '';
     $setor      = trim($data['setor']      ?? '');
+
+    if (mb_strlen($prontuario, 'UTF-8') > 50 || mb_strlen($nome, 'UTF-8') > 150 || mb_strlen($setor, 'UTF-8') > 50) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Campos excedem o tamanho permitido']);
+        exit;
+    }
 
     if (!$prontuario || !$nome || !in_array($turno, $turnos, true) || !$setor) {
         http_response_code(400);
@@ -66,6 +84,12 @@ if ($action === 'create') {
     $nome       = trim($data['nome']       ?? '');
     $turno      = $data['turno']           ?? '';
     $setor      = trim($data['setor']      ?? '');
+
+    if (mb_strlen($prontuario, 'UTF-8') > 50 || mb_strlen($nome, 'UTF-8') > 150 || mb_strlen($setor, 'UTF-8') > 50) {
+        http_response_code(400);
+        echo json_encode(['error' => 'Campos excedem o tamanho permitido']);
+        exit;
+    }
 
     if (!$id || !$prontuario || !$nome || !in_array($turno, $turnos, true) || !$setor) {
         http_response_code(400);

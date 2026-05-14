@@ -1,6 +1,9 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/../config/security.php';
+
+security_bootstrap(true);
 
 if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
     http_response_code(405);
@@ -12,6 +15,12 @@ $prontuario = trim($_GET['prontuario'] ?? '');
 if ($prontuario === '') {
     http_response_code(400);
     echo json_encode(['error' => 'Prontuário obrigatório']);
+    exit;
+}
+
+if (mb_strlen($prontuario, 'UTF-8') > 50 || !preg_match('/^[A-Za-z0-9._-]+$/', $prontuario)) {
+    http_response_code(400);
+    echo json_encode(['error' => 'Prontuário inválido']);
     exit;
 }
 

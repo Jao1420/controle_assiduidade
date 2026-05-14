@@ -67,13 +67,14 @@ $anoAtual = (int)date('Y');
 $anosOpts = range($anoAtual - 4, $anoAtual + 2);
 
 // Dados para JS
-$justJs  = json_encode(JUSTIFICATIVAS);
+$jsonFlags = JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+$justJs  = json_encode(JUSTIFICATIVAS, $jsonFlags);
 $usersJs = json_encode(array_map(fn($u) => [
     'id'         => (int)$u['id'],
     'nome'       => $u['nome'],
     'prontuario' => $u['prontuario'],
     'turno'      => $u['turno'],
-], $usuarios));
+], $usuarios), $jsonFlags);
 
 // Todos os funcionários ativos (sem filtro de turno) para autocomplete de nome
 $stmtAll   = $pdo->query("SELECT id, prontuario, nome, turno FROM usuarios WHERE ativo = 1 ORDER BY nome");
@@ -82,7 +83,7 @@ $allUsersJs = json_encode(array_map(fn($u) => [
     'nome'       => $u['nome'],
     'prontuario' => $u['prontuario'],
     'turno'      => $u['turno'],
-], $stmtAll->fetchAll()));
+], $stmtAll->fetchAll()), $jsonFlags);
 ?>
 
 <!-- Page header -->
