@@ -90,10 +90,18 @@ function getConnection(): PDO
         }
     }
 
-    $host   = $env['DB_HOST']     ?? '127.0.0.1';
-    $port   = $env['DB_PORT']     ?? '3306';
-    $dbname = $env['DB_NAME']     ?? 'controle_absenteismo';
-    $user   = $env['DB_USERNAME'] ?? 'root';
+    $requiredKeys = ['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USERNAME'];
+    foreach ($requiredKeys as $requiredKey) {
+        if (!array_key_exists($requiredKey, $env) || $env[$requiredKey] === '') {
+            http_response_code(500);
+            die(json_encode(['error' => 'Configuração de banco ausente no arquivo .env.']));
+        }
+    }
+
+    $host   = $env['DB_HOST'];
+    $port   = $env['DB_PORT'];
+    $dbname = $env['DB_NAME'];
+    $user   = $env['DB_USERNAME'];
     $pass   = $env['DB_PASSWORD'] ?? '';
 
     $options = [
