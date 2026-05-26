@@ -179,11 +179,11 @@ Cada justificativa possui:
 ### 7.2 Arquivo .env
 Crie `.env` na raiz do projeto com base em `.env.example`:
 ```env
-DB_HOST=127.0.0.1
-DB_PORT=3306
+DB_HOST=
+DB_PORT=
 DB_USERNAME=root
 DB_PASSWORD=
-DB_NAME=controle_absenteismo
+DB_NAME=
 ```
 
 ### 7.3 Banco de dados
